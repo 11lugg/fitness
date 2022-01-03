@@ -5,6 +5,8 @@ import { useUserContext } from "./context/userContext";
 function App() {
   const { user, loading, error } = useUserContext();
 
+  console.log(user);
+
   return (
     <div className="App">
       {error && <p className="error">{error}</p>}
