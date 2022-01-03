@@ -1,16 +1,14 @@
-import logo from './logo.svg';
-import './App.css';
+import Auth from "./components/auth";
+import Dashboard from "./components/dashboard";
+import { useUserContext } from "./context/userContext";
 
 function App() {
+  const { user, loading, error } = useUserContext();
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <h1>Fitness</h1>
-      </header>
+      {error && <p className="error">{error}</p>}
+      {loading ? <h2>Loading...</h2> : <> {user ? <Dashboard /> : <Auth />} </>}
     </div>
   );
 }
