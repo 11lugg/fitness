@@ -6,7 +6,7 @@ import {
   signOut,
   sendPasswordResetEmail,
 } from "firebase/auth";
-import { doc, setDoc, getDoc } from "firebase/firestore";
+import { doc, setDoc, getDoc, updateDoc, arrayUnion } from "firebase/firestore";
 import { auth, db } from "../firebase";
 
 export const UserContext = createContext({});
@@ -35,37 +35,40 @@ export const UserContextProvider = ({ children }) => {
     return unsubscribe;
   }, []);
 
- const registerUser = async (email, password, name) => {
+  const registerUser = async (email, password, name) => {
     setLoading(true);
-        try {
-          await createUserWithEmailAndPassword(auth, email, password);
-          await setDoc(doc(db, "users", auth.currentUser.uid), {
-            name,
-            weight: '',
-            weightMeasurement: '',
-            lastSignInTime: auth.currentUser.metadata.lastSignInTime,
-            accountCreated: auth.currentUser.metadata.creationTime
-          });
-          const docSnap = await getDoc(doc(db, "users", auth.currentUser.uid));
-          docSnap.exists() && setUserData(docSnap.data());
-        } catch (error) {
-          setError(error.message);
-        } finally {
-            setLoading(false)
-        };
+    try {
+      await createUserWithEmailAndPassword(auth, email, password);
+      await setDoc(doc(db, "users", auth.currentUser.uid), {
+        name,
+        weight: [],
+        weightMeasurement: "",
+        lastSignInTime: auth.currentUser.metadata.lastSignInTime,
+        accountCreated: auth.currentUser.metadata.creationTime,
+      });
+      const docSnap = await getDoc(doc(db, "users", auth.currentUser.uid));
+      docSnap.exists() && setUserData(docSnap.data());
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const signInUser = async (email, password) => {
     setLoading(true);
     try {
-        await signInWithEmailAndPassword(auth, email, password);
-        const docSnap = await getDoc(doc(db, "users", auth.currentUser.uid));
-        docSnap.exists() && setUserData(docSnap.data());
-      } catch (error) {
-        setError(error.code);
-      } finally {
-          setLoading(false)
-      };
+      await signInWithEmailAndPassword(auth, email, password);
+      await updateDoc(doc(db, "users", auth.currentUser.uid), {
+        lastSignInTime: auth.currentUser.metadata.lastSignInTime,
+      });
+      const docSnap = await getDoc(doc(db, "users", auth.currentUser.uid));
+      docSnap.exists() && setUserData(docSnap.data());
+    } catch (error) {
+      setError(error.code);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const logoutUser = () => {
@@ -76,6 +79,20 @@ export const UserContextProvider = ({ children }) => {
     return sendPasswordResetEmail(auth, email);
   };
 
+  const updateWeight = async (weight, weightMeasurement) => {
+    setLoading(true);
+    try {
+      await updateDoc(doc(db, "users", auth.currentUser.uid), {
+        weight: arrayUnion(weight),
+        weightMeasurement
+      });
+    } catch (error) {
+      setError(error.code);
+    } finally {
+      setLoading(false);
+    }
+  }
+
   const contextValue = {
     user,
     userData,
@@ -85,6 +102,7 @@ export const UserContextProvider = ({ children }) => {
     registerUser,
     logoutUser,
     forgotPassword,
+    updateWeight
   };
   return (
     <UserContext.Provider value={contextValue}>{children}</UserContext.Provider>

@@ -87,3 +87,29 @@ button {
   max-width: 400px;
   margin-bottom: 18px;
 }
+
+#dashboard > form > div {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  justify-items: center;
+}
+
+#dashboard > form > div> input {
+  margin: 0;
+}
+
+#dashboard > form > div > select {
+  padding: 12px;
+  margin: 0;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  box-shadow: 0 1px 4px #ccc;
+  border-radius: 6px;
+  font-size: 18px;
+  width: 30%;
+}
+
+#dashboard > form > button {
+  margin: 6px 0;
+}
