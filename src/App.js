@@ -1,15 +1,23 @@
 import Auth from "./components/auth";
 import Dashboard from "./components/dashboard";
-import { useUserContext } from "./context/userContext";
+import PrivateOutlet from "./components/privateOutlet";
+import { Route, Routes } from "react-router-dom";
+import NotFound from "./components/notFount";
+
+
 
 function App() {
-  const { user, loading, error } = useUserContext();
 
   return (
-    <div className="App">
-      {error && <p className="error">{error}</p>}
-      {loading ? <h2>Loading...</h2> : <> {user ? <Dashboard /> : <Auth />} </>}
-    </div>
+    <main className="App">
+      <Routes>
+        <Route exact path="/" element={<Auth/>}/>
+        <Route path="/dashboard" element={<PrivateOutlet/>}>
+          <Route path="" element={<Dashboard />} />
+        </Route>
+        <Route path="*" element={<NotFound/>}/>
+      </Routes>
+    </main>
   );
 }
 

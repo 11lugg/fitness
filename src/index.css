@@ -82,10 +82,12 @@ button {
   background-color: tomato;
   color: white;
   border-radius: 6px;
-  padding: 6px 12px;
+  padding: 0 12px;
   font-weight: bold;
-  max-width: 400px;
-  margin-bottom: 18px;
+  width: 93%;
+  text-align: center;
+  margin: 8px;
+  box-shadow: 0 1px 4px #ccc;
 }
 
 #dashboard > form > div {

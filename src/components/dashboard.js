@@ -2,8 +2,8 @@ import React, { useEffect, useState, useRef } from "react";
 import { useUserContext } from "../context/userContext";
 import { doc, getDoc } from "firebase/firestore";
 import { auth, db } from "../firebase";
-import { unstable_renderSubtreeIntoContainer } from "react-dom";
 import WeightList from "./weightList";
+import Error from "./error";
 
 const Dashboard = () => {
   const weightRef = useRef();
@@ -37,12 +37,9 @@ const Dashboard = () => {
     <WeightList key={number.toString()} value={number} />
   ));
 
-  if (error) {
-    return <div>{error}</div>;
-  }
-
   return (
     <div id="dashboard">
+      {error && <Error error={error} />}
       <h1>Dashboard </h1>
       <h2>Name: {userData?.name}</h2>
       <h2>Email: {user.email}</h2>

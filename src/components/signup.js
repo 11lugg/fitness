@@ -1,11 +1,15 @@
 import React, { useRef } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useUserContext } from "../context/userContext";
+import Error from "./error";
 
 const Signup = () => {
   const emailRef = useRef();
   const nameRef = useRef();
   const psdRef = useRef();
-  const { registerUser } = useUserContext();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { registerUser, error } = useUserContext();
 
   const onSubmit = (e) => {
     e.preventDefault();
@@ -13,6 +17,9 @@ const Signup = () => {
     const name = nameRef.current.value;
     const password = psdRef.current.value;
     if (email && password && name) registerUser(email, password, name);
+    if (location.state?.from) {
+      navigate(location.state.from);
+    }
   };
 
   return (
@@ -22,6 +29,7 @@ const Signup = () => {
         <input placeholder="Email" type="email" ref={emailRef} />
         <input placeholder="Name" type="name" ref={nameRef} />
         <input placeholder="Password" type="password" ref={psdRef} />
+        {error && <Error error={error}/>}
         <button type="submit">Register</button>
       </form>
     </div>
